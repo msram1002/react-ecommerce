@@ -17,6 +17,6 @@ export default makeStyles(() => ({
     justifyContent: 'space-between',
   },
   cardDesc: {
-    minHeight: '100px'
+    minHeight: '120px'
   }
 }));
