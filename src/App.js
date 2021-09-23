@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 // import Products from './components/Product/Products';
 // import Navbar from './components/Navbar/Navbar';
 import { Products, Navbar, Cart } from './components';
@@ -13,7 +13,7 @@ function App() {
   const [cart, setCart] = useState({});
 
   const fetchProd = async () => {
-    const { data } = await commerce.products.list();
+    const {data} = await commerce.products.list();
     setProducts(data);
   };
 
@@ -40,7 +40,7 @@ function App() {
             <Products products={products} onAddToCart= {handleAddToCart} />
           </Route>
           <Route exact path="/cart">
-            <Cart cart={ cart } />
+            <Cart cart={cart} />
           </Route>
         </Switch>
       </div>

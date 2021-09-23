@@ -46,7 +46,7 @@ const Cart = ( { cart } ) => {
         <Typography className={classes.title} variant="h4" gutterBottom>
           Your Shopping Cart
         </Typography>
-        { cart.line_items_length? <EmptyCart /> : <FilledCart /> }
+        {cart.line_items_length? <EmptyCart /> : <FilledCart />}
       </Container>
     </div>
   )

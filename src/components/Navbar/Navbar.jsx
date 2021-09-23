@@ -16,7 +16,7 @@ const Navbar = ({ totalItems }) => {
         <Toolbar>
           <Typography component={Link} to="/" variant="h5" className={classes.title} color="inherit">
             <img src={logo} alt="ecommerce" height="70px" className={classes.image} />
-              SRM E-Commerce Store
+            SRM E-Commerce Store
           </Typography>
           <div className={classes.grow} />
           {location.pathname === '/' && (
