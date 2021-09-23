@@ -12,7 +12,7 @@ const Navbar = () => {
       <AppBar position="fixed" className={classes.AppBar} color="inherit">
         <Toolbar>
           <Typography variant="h6" className={classes.title} color="inherit">
-            <img src={logo} alt="ecommerce" height="60px" className={classes.image} />
+            <img src={logo} alt="ecommerce" height="70px" className={classes.image} />
               SRM E-Commerce Store
           </Typography>
           <div className={classes.grow}/>
