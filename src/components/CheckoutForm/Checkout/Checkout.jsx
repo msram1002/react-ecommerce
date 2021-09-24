@@ -1,17 +1,33 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Paper, Stepper, Step, StepLabel, Typography, CircularProgress, Divider, Button} from '@material-ui/core';
 import AddressForm from './AddressForm';
 import PaymentForm from './PaymentForm';
-
+import { commerce } from '../../../lib/commerce';
 import useStyles from './styles';
 
 const steps = ['Shipping Address', 'Payment Details'];
 
-const Checkout = () => {
+const Checkout = ({ cart }) => {
   const classes = useStyles();
-  const [activeStep, setActiveStep] = useState(1);
+  const [checkoutToken, setCheckoutToken] = useState(null);
+  const [activeStep, setActiveStep] = useState(0);
 
-  const Form = () => activeStep === 0 ? <AddressForm />: <PaymentForm />;
+  // Generate Checkout Token as user clicks on Checkout
+  useEffect(() => { 
+    const generateToken = async () => {
+      try {
+        const token = await commerce.checkout.generateToken(cart.id, { type: 'cart'});
+        console.log(token);
+        setCheckoutToken(token);
+      } catch (error) {
+
+      }
+    }
+
+    generateToken();
+  }, [cart]);
+
+  const Form = () => activeStep === 0 ? <AddressForm checkoutToken={checkoutToken} />: <PaymentForm />;
 
   const Confirmation = () => (
     <div>
@@ -33,7 +49,8 @@ const Checkout = () => {
             ))}
           </Stepper>
           {/* If we are on the last step */}
-          { activeStep === steps.length ? <Confirmation /> : <Form/> }
+          {/* The && condition is to show the form only when token gets generated as address form needs the token */}
+          { activeStep === steps.length ? <Confirmation /> : checkoutToken &&<Form/> }
         </Paper>
       </main>
     </>
