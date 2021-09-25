@@ -18,7 +18,6 @@ const Review = ( { checkoutToken }) => {
           <Typography variant="subtitle1" style={{fontWeight: 700}}>
             {checkoutToken.live.subtotal.formatted_with_symbol}
           </Typography>
-
         </ListItem>
       </List>
     </>
