@@ -17,75 +17,83 @@ const Checkout = ({ cart, order, onCaptureCheckout, error }) => {
   const [shippingData, setShippingData] = useState({});
 
   // Generate Checkout Token as user clicks on Checkout
-  useEffect(() => { 
+  useEffect(() => {
     const generateToken = async () => {
       try {
-        const token = await commerce.checkout.generateToken(cart.id, { type: 'cart'});
+        const token = await commerce.checkout.generateToken(cart.id, {
+          type: "cart",
+        });
         setCheckoutToken(token);
       } catch (error) {
         console.log(error);
       }
-    }
+    };
     generateToken();
   }, [cart]);
 
   const nextStep = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
-  }
-  
+  };
+
   const backStep = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
-  }
+  };
+
   // Handling the shipping data
   const next = (data) => {
     setShippingData(data);
     nextStep();
   };
 
-  const Form = () => activeStep === 0 ? <AddressForm checkoutToken={checkoutToken} next={next} />: <PaymentForm shippingData={shippingData} checkoutToken={checkoutToken} backStep={backStep} onCaptureCheckout={onCaptureCheckout} nextStep={nextStep}/>;
+  const Form = () => (activeStep === 0 ? 
+    <AddressForm checkoutToken={checkoutToken} next={next} /> : 
+    <PaymentForm shippingData={shippingData} checkoutToken={checkoutToken} 
+    nextStep={nextStep} backStep={backStep} onCaptureCheckout={onCaptureCheckout} /> );
 
-  let Confirmation = () => order.customer ? ( 
-    <>
-      <div> 
-        <Typography variant="h6">
-          Thank you for your purchase, {order.customer.firstname} {order.customer.lastname}.
-        </Typography>
-        <Divider className={classes.divider} />
-        <Typography variant="subtitle2">
-          Order Reference: {order.customer_ref}
-        </Typography>
-        <br />
-        <Button component={Link} to="/" variant="outlined" type="button">
-          Back to Home
-        </Button>
+  let Confirmation = () =>
+    order.customer ? (
+      <>
+        <div>
+          <Typography variant="h6">
+            Thank you for your purchase, {order.customer.firstname} {order.customer.lastname}.
+          </Typography>
+          <Divider className={classes.divider} />
+          <Typography variant="subtitle2">
+            Order Reference: {order.customer_reference}
+          </Typography>
+          <br />
+          <Button component={Link} to="/" variant="outlined" type="button">
+            Back to Home
+          </Button>
+        </div>
+      </>
+    ) : (
+      <div className={classes.spinner}>
+        <CircularProgress />
       </div>
-    </>
-  ) : (
-    <div className={classes.spinner}>
-      <CircularProgress />
-    </div>
-  );
+    );
 
   if (error) {
     <>
-      <Typography variant="h5">
-        Error: {error}
-      </Typography>
+      <Typography variant="h5">Error: {error}</Typography>
       <br />
-      <Button component={Link} to="/" variant="outlined" type="button">Back to Home
-        </Button>
-    </>
+      <Button component={Link} to="/" variant="outlined" type="button">
+        Back to Home
+      </Button>
+    </>;
   }
 
   return (
     <>
-    <CssBaseline />
+      <CssBaseline />
       <div className={classes.toolbar} />
       <main className={classes.layout}>
         <Paper className={classes.paper}>
-          <Typography variant="h5" align="center">Checkout</Typography>
+          <Typography variant="h5" align="center">
+            Checkout
+          </Typography>
           <Stepper activeStep={activeStep} className={classes.stepper}>
-            {steps.map((step) =>(
+            {steps.map((step) => (
               <Step key={step}>
                 <StepLabel>{step}</StepLabel>
               </Step>
@@ -93,11 +101,11 @@ const Checkout = ({ cart, order, onCaptureCheckout, error }) => {
           </Stepper>
           {/* If we are on the last step */}
           {/* The && condition is to show the form only when token gets generated as address form needs the token */}
-          { activeStep === steps.length ? <Confirmation /> : checkoutToken &&<Form/> }
+          {activeStep === steps.length ? ( <Confirmation /> ) : ( checkoutToken && <Form />)}
         </Paper>
       </main>
     </>
-  )
+  );
 }
 
 export default Checkout;

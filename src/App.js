@@ -8,12 +8,9 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 function App() {
   // For the products
   const [products, setProducts] = useState([]);
-
   // Set the initial cart count and update as user add to cart
   const [cart, setCart] = useState({});
-
   const [order, setOrder] = useState({});
-
   const [errMsg, setErrMsg] = useState('');
 
   const fetchProd = async () => {
@@ -47,8 +44,7 @@ function App() {
 
   const handleCaptureCheckout = async (checkoutTokenId, newOrder) => {
     try {
-      // Need to provide card details
-      // on commerce js
+      // Need to add card details for using stripe on commerce js
       const incomingOrder = await commerce.checkout.capture(checkoutTokenId, newOrder);
       setOrder(incomingOrder);
       // setOrder(newOrder);
@@ -92,7 +88,7 @@ function App() {
         </Switch>
       </div>
     </Router>
-  )
-}
+  );
+};
 
 export default App;

@@ -5,7 +5,7 @@ import { loadStripe } from '@stripe/stripe-js';
 
 import Review from './Review';
 
-const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY );
+const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY);
 
 const PaymentForm = ({ checkoutToken, shippingData, backStep, onCaptureCheckout, nextStep }) => {
   const handleSubmit = async (event, elements, stripe) => {
@@ -23,7 +23,7 @@ const PaymentForm = ({ checkoutToken, shippingData, backStep, onCaptureCheckout,
       const orderData = {
         line_items: checkoutToken.live.line_items,
         customer: { firstname: shippingData.firstName, lastname: shippingData.lastName, email: shippingData.email },
-        shipping: { name: 'International', street: shippingData.address1, town_city: shippingData.city, county_state: shippingData.shippingSubdivision, postal_zip_code: shippingData.zip, country: shippingData.shippingCountry },
+        shipping: { name: 'Primary', street: shippingData.address1, town_city: shippingData.city, county_state: shippingData.shippingSubdivision, postal_zip_code: shippingData.zip, country: shippingData.shippingCountry },
         fulfillment: { shipping_method: shippingData.shippingOption },
         payment: {
           gateway: 'stripe',
@@ -50,7 +50,7 @@ const PaymentForm = ({ checkoutToken, shippingData, backStep, onCaptureCheckout,
             <form onSubmit={(e) => handleSubmit(e, elements, stripe)}>
               <CardElement />
               <br /> <br />
-              <div style={{display: 'flex', justifyContent: 'space-between'}}>
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <Button variant="outlined" onClick={backStep}>Back</Button>
                 <Button type="submit" variant="contained" disabled={!stripe} color="primary">
                   Pay { checkoutToken.live.subtotal.formatted_with_symbol }
@@ -61,7 +61,7 @@ const PaymentForm = ({ checkoutToken, shippingData, backStep, onCaptureCheckout,
         </ElementsConsumer>
       </Elements>
     </>
-  )
+  );
 };
 
 export default PaymentForm;
