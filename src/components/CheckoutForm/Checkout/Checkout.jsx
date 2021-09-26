@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { Paper, Stepper, Step, StepLabel, Typography, CircularProgress, Divider, Button} from '@material-ui/core';
+import { Paper, Stepper, Step, StepLabel, Typography, CircularProgress, Divider, Button, CssBaseline } from '@material-ui/core';
+import { Link } from 'react-router-dom';
+import { commerce } from '../../../lib/commerce';
+
 import AddressForm from './AddressForm';
 import PaymentForm from './PaymentForm';
-import { commerce } from '../../../lib/commerce';
+
 import useStyles from './styles';
 
 const steps = ['Shipping Address', 'Payment Details'];
 
-const Checkout = ({ cart }) => {
+const Checkout = ({ cart, order, onCaptureCheckout, error }) => {
   const classes = useStyles();
   const [checkoutToken, setCheckoutToken] = useState(null);
   const [activeStep, setActiveStep] = useState(0);
@@ -20,7 +23,7 @@ const Checkout = ({ cart }) => {
         const token = await commerce.checkout.generateToken(cart.id, { type: 'cart'});
         setCheckoutToken(token);
       } catch (error) {
-
+        console.log(error);
       }
     }
     generateToken();
@@ -39,16 +42,44 @@ const Checkout = ({ cart }) => {
     nextStep();
   };
 
-  const Form = () => activeStep === 0 ? <AddressForm checkoutToken={checkoutToken} next={next} />: <PaymentForm shippingData={shippingData} checkoutToken={checkoutToken} backStep={backStep} />;
+  const Form = () => activeStep === 0 ? <AddressForm checkoutToken={checkoutToken} next={next} />: <PaymentForm shippingData={shippingData} checkoutToken={checkoutToken} backStep={backStep} onCaptureCheckout={onCaptureCheckout} nextStep={nextStep}/>;
 
-  const Confirmation = () => (
-    <div>
-      Confirmation
+  let Confirmation = () => order.customer ? ( 
+    <>
+      <div> 
+        <Typography variant="h6">
+          Thank you for your purchase, {order.customer.firstname} {order.customer.lastname}.
+        </Typography>
+        <Divider className={classes.divider} />
+        <Typography variant="subtitle2">
+          Order Reference: {order.customer_ref}
+        </Typography>
+        <br />
+        <Button component={Link} to="/" variant="outlined" type="button">
+          Back to Home
+        </Button>
+      </div>
+    </>
+  ) : (
+    <div className={classes.spinner}>
+      <CircularProgress />
     </div>
   );
 
+  if (error) {
+    <>
+      <Typography variant="h5">
+        Error: {error}
+      </Typography>
+      <br />
+      <Button component={Link} to="/" variant="outlined" type="button">Back to Home
+        </Button>
+    </>
+  }
+
   return (
     <>
+    <CssBaseline />
       <div className={classes.toolbar} />
       <main className={classes.layout}>
         <Paper className={classes.paper}>

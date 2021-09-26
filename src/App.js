@@ -12,6 +12,10 @@ function App() {
   // Set the initial cart count and update as user add to cart
   const [cart, setCart] = useState({});
 
+  const [order, setOrder] = useState({});
+
+  const [errMsg, setErrMsg] = useState('');
+
   const fetchProd = async () => {
     const {data} = await commerce.products.list();
     setProducts(data);
@@ -41,6 +45,26 @@ function App() {
     setCart (emptyTheCart.cart);
   }
 
+  const handleCaptureCheckout = async (checkoutTokenId, newOrder) => {
+    try {
+      // Need to provide card details
+      // on commerce js
+      const incomingOrder = await commerce.checkout.capture(checkoutTokenId, newOrder);
+      setOrder(incomingOrder);
+      // setOrder(newOrder);
+      refreshCart();
+    } catch (error) {
+      setErrMsg(error.data.error.message);
+    }
+  }
+
+  // After order getting processed 
+  // we need to clear the cart
+  const refreshCart = async () => {
+    const newCart = await commerce.cart.refresh();
+    setCart(newCart);
+  }
+
   useEffect(() => {
     fetchProd();
     fetchCart();
@@ -62,7 +86,8 @@ function App() {
             handleUpdateCartQty={handleUpdateCartQty} />
           </Route>
           <Route exact path="/checkout">
-            <Checkout cart={cart} />
+            <Checkout cart={cart} order= {order} onCaptureCheckout={handleCaptureCheckout}
+            error={errMsg}/>
           </Route>
         </Switch>
       </div>
